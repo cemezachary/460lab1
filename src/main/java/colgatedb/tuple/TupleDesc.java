@@ -78,6 +78,7 @@ public class TupleDesc implements Serializable {
      *               TupleDesc. It must contain at least one entry.
      */
     public TupleDesc(Type[] typeAr) {
+        schema = new TDItem[typeAr.length];
         throw new UnsupportedOperationException("implement me!");
     }
 
@@ -118,7 +119,7 @@ public class TupleDesc implements Serializable {
      * @return the index of the field that is first to have the given name.
      * @throws NoSuchElementException if no field with a matching name is found.
      */
-    public int fieldNameToIndex(String name)  {
+    /*public int fieldNameToIndex(String name)  {
         for (int i = 0; i < schema.length; i++) {
             if (schema[i].fieldName == null){}
 
@@ -128,7 +129,7 @@ public class TupleDesc implements Serializable {
         }
         throw new NoSuchElementException();
         //throw new UnsupportedOperationException("implement me!");
-    }
+    }*/
 
     /**
      * @return The size (in bytes) of tuples corresponding to this TupleDesc.
