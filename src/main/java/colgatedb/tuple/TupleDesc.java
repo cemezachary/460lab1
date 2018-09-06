@@ -104,6 +104,7 @@ public class TupleDesc implements Serializable {
      * @throws NoSuchElementException if i is not a valid field reference.
      */
     public Type getFieldType(int i) throws NoSuchElementException {
+        //if (schema[i]
         throw new UnsupportedOperationException("implement me!");
     }
 
