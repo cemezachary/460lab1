@@ -62,7 +62,6 @@ public class TupleDesc implements Serializable {
      *                be null.
      */
     public TupleDesc(Type[] typeAr, String[] fieldAr) {
-        //throw new UnsupportedOperationException("implement me!");
         schema = new TDItem[typeAr.length];
         for (int i = 0; i < schema.length; i++){
             schema[i] = new TDItem(typeAr[i], fieldAr[i]);
@@ -79,7 +78,10 @@ public class TupleDesc implements Serializable {
      */
     public TupleDesc(Type[] typeAr) {
         schema = new TDItem[typeAr.length];
-        throw new UnsupportedOperationException("implement me!");
+        for (int i = 0; i < schema.length; i++){
+            schema[i] = new TDItem(typeAr[i], "");
+        }
+        //throw new UnsupportedOperationException("implement me!");
     }
 
     /**
