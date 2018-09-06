@@ -88,7 +88,11 @@ public class TupleDesc implements Serializable {
      * @return the number of fields in this TupleDesc
      */
     public int numFields() {
-        throw new UnsupportedOperationException("implement me!");
+        //int num_field = 0; 
+        //get the table information
+        //for (int i = 0; i < schema.length; i++) {}
+        return schema.length;    
+        //throw new UnsupportedOperationException("implement me!");
     }
 
     /**
