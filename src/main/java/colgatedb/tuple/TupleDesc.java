@@ -88,9 +88,6 @@ public class TupleDesc implements Serializable {
      * @return the number of fields in this TupleDesc
      */
     public int numFields() {
-        //int num_field = 0; 
-        //get the table information
-        //for (int i = 0; i < schema.length; i++) {}
         return schema.length;    
         //throw new UnsupportedOperationException("implement me!");
     }
@@ -132,17 +129,14 @@ public class TupleDesc implements Serializable {
      * @return the index of the field that is first to have the given name.
      * @throws NoSuchElementException if no field with a matching name is found.
      */
-    /*public int fieldNameToIndex(String name)  {
+    public int fieldNameToIndex(String name)  {
         for (int i = 0; i < schema.length; i++) {
-            if (schema[i].fieldName == null){}
-
-            else if (equals(schema[i].fieldName.equals(name))) {
+            if ((schema[i].fieldName).equals(name)) {
                 return i;
-            }
+            }   
         }
         throw new NoSuchElementException();
-        //throw new UnsupportedOperationException("implement me!");
-    }*/
+    }
 
     /**
      * @return The size (in bytes) of tuples corresponding to this TupleDesc.
@@ -152,7 +146,15 @@ public class TupleDesc implements Serializable {
      * @see Type#getLen()
      */
     public int getSize() {
-        throw new UnsupportedOperationException("implement me!");
+        /*int total = 0;
+        byte[] bytes = new bytes[schema.length];
+        for (int i = 0; i < schema.length; i++){
+            bytes[i] = schema[i].getBytes();
+        }
+        for (int k = 0; k < bytes.length; k++){
+            total += bytes[k];
+        }
+        return total;*/
     }
 
     /**
