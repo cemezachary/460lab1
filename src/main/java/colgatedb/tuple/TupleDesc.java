@@ -104,10 +104,10 @@ public class TupleDesc implements Serializable {
      * @throws NoSuchElementException if i is not a valid field reference.
      */
     public Type getFieldType(int i) {
-        if (i > schema.length){
+        if (i > schema.length || i < 0){
             throw new NoSuchElementException();
         }
-        //return schema[i].type?
+        return schema[i].fieldType;
         //throw new UnsupportedOperationException("implement me!");
     }
 
@@ -119,10 +119,10 @@ public class TupleDesc implements Serializable {
      * @throws NoSuchElementException if i is not a valid field reference.
      */
     public String getFieldName(int i) throws NoSuchElementException {
-        if (i > schema.length){
+        if (i > schema.length || i < 0){
             throw new NoSuchElementException();
         }
-        //return schema[i].field? or TDItem(typeAr[i], fieldAr[i])
+        return schema[i].fieldName;
     }
 
     /**
