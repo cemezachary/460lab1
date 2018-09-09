@@ -62,6 +62,9 @@ public class TupleDesc implements Serializable {
      *                be null.
      */
     public TupleDesc(Type[] typeAr, String[] fieldAr) {
+        if (typeAr.length == 0 || typeAr.length != fieldAr.length){
+            throw new InvalidParameterException();
+        }
         schema = new TDItem[typeAr.length];
         for (int i = 0; i < schema.length; i++){
             schema[i] = new TDItem(typeAr[i], fieldAr[i]);
@@ -77,6 +80,9 @@ public class TupleDesc implements Serializable {
      *               TupleDesc. It must contain at least one entry.
      */
     public TupleDesc(Type[] typeAr) {
+        if (typeAr.length == 0 || typeAr.length != fieldAr.length){
+            throw new InvalidParameterException();
+        }
         schema = new TDItem[typeAr.length];
         for (int i = 0; i < schema.length; i++){
             schema[i] = new TDItem(typeAr[i], "");
@@ -88,6 +94,9 @@ public class TupleDesc implements Serializable {
      * @return the number of fields in this TupleDesc
      */
     public int numFields() {
+        if (schema.length == 0){
+            throw new InvalidParameterException();
+        }
         return schema.length;    
         //throw new UnsupportedOperationException("implement me!");
     }
@@ -101,7 +110,7 @@ public class TupleDesc implements Serializable {
      * @throws NoSuchElementException if i is not a valid field reference.
      */
     public Type getFieldType(int i) {
-        if (i > schema.length || i < 0){
+        if (i >= schema.length || i < 0){
             throw new NoSuchElementException();
         }
         return schema[i].fieldType;
@@ -115,8 +124,8 @@ public class TupleDesc implements Serializable {
      * @return the name of the ith field
      * @throws NoSuchElementException if i is not a valid field reference.
      */
-    public String getFieldName(int i) throws NoSuchElementException {
-        if (i > schema.length || i < 0){
+    public String getFieldName(int i) {
+        if (i >= schema.length || i < 0){
             throw new NoSuchElementException();
         }
         return schema[i].fieldName;
@@ -131,8 +140,10 @@ public class TupleDesc implements Serializable {
      */
     public int fieldNameToIndex(String name)  {
         for (int i = 0; i < schema.length; i++) {
-            if ((schema[i].fieldName).equals(name)) {
-                return i;
+            if (schema[i].fieldName != null){
+                if ((schema[i].fieldName).equals(name)) {
+                    return i;
+                }
             }   
         }
         throw new NoSuchElementException();
@@ -146,15 +157,12 @@ public class TupleDesc implements Serializable {
      * @see Type#getLen()
      */
     public int getSize() {
-        /*int total = 0;
-        byte[] bytes = new bytes[schema.length];
+        int total = 0;
         for (int i = 0; i < schema.length; i++){
-            bytes[i] = schema[i].getBytes();
+            total += (schema[i].fieldName).getLen();
+            total += (schema[i].fieldType).getLen();
         }
-        for (int k = 0; k < bytes.length; k++){
-            total += bytes[k];
-        }
-        return total;*/
+        return total;
     }
 
     /**
@@ -163,7 +171,7 @@ public class TupleDesc implements Serializable {
      */
     public Iterator<TDItem> iterator() {
         // hint: use java.util.Arrays.asList to convert array into a list, then return list iterator.
-        throw new UnsupportedOperationException("implement me!");
+        
     }
 
     /**
