@@ -31,12 +31,12 @@ public class Tuple implements Serializable {
      *
      * @param td the schema of this tuple. It must be a valid TupleDesc instance with at least one field.
      */
-    private Tuple tuple;
+    private TupleDesc schema;
     public Tuple(TupleDesc td) {
         if (td.fieldName == null || td.fieldType == null){
             throw new InvalidParameterException();
         }
-        tuple = new Tuple(td);
+        schema = new Tuple(td);
     }
 
     /**
@@ -46,7 +46,7 @@ public class Tuple implements Serializable {
         if (tuple.length == 0){
             throw new InvalidParameterException();
         }
-        return tuple;
+        return schema;
     }
 
     /**
