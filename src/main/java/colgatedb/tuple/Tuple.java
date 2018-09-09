@@ -43,6 +43,9 @@ public class Tuple implements Serializable {
      * @return The TupleDesc representing the schema of this tuple.
      */
     public TupleDesc getTupleDesc() {
+        if (tuple,length == 0){
+            throw new InvalidParameterException();
+        }
         return tuple;
     }
 
@@ -55,7 +58,17 @@ public class Tuple implements Serializable {
      * @throws NoSuchElementException if i is not a valid field reference.
      */
     public void setField(int i, Field f) {
-        throw new UnsupportedOperationException("implement me!");
+        for (int k = 0; k < tuple.length; k++){
+            if (k == i){
+                if (f.fieldType.equals(tuple[i].fieldType)){
+                    tuple[i] = f;
+                }
+                else{
+                    throw new RuntimeException();
+                }
+            }
+        }
+        throw new NoSuchElementException();
     }
 
     /**
@@ -64,7 +77,13 @@ public class Tuple implements Serializable {
      * @throws NoSuchElementException if i is not a valid field reference.
      */
     public Field getField(int i) {
-        throw new UnsupportedOperationException("implement me!");
+        if (i >= tuple.length || i < 0){
+            throw new NoSuchElementException();
+        }
+        if (tuple[i] == null){
+            return null;
+        }
+        return tuple[i];
     }
 
     /**
@@ -76,7 +95,11 @@ public class Tuple implements Serializable {
      * where \t is a tab and \n is a newline
      */
     public String toString() {
-        throw new UnsupportedOperationException("implement me!");
+        Srting desc = "";
+        for (int i = 0; i < tuple.length; i++){
+            desc += tuple[i] + "\t" + "\n";
+        }
+        return desc;
     }
 
 
@@ -85,7 +108,8 @@ public class Tuple implements Serializable {
      */
     public Iterator<Field> fields() {
         // hint: use java.util.Arrays.asList to convert array into a list, then return list iterator.
-        throw new UnsupportedOperationException("implement me!");
+        Iterator<Field> iter = tuple.iterator();
+        return iter;
     }
 
     /**
