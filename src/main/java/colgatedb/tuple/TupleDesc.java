@@ -208,7 +208,7 @@ public class TupleDesc implements Serializable {
      * @return String describing this descriptor.
      */
     public String toString() {
-        String desc = ""
+        String desc = "";
         for (int i = 0; i < schema.length; i++){
             desc += schema[i].fieldName + "(" + schema[i].fieldType + ")";
         }
