@@ -171,7 +171,8 @@ public class TupleDesc implements Serializable {
      */
     public Iterator<TDItem> iterator() {
         // hint: use java.util.Arrays.asList to convert array into a list, then return list iterator.
-        
+        Iterator<TDItem> iter = schema.iterator().asList;
+        return iter;
     }
 
     /**
@@ -183,7 +184,13 @@ public class TupleDesc implements Serializable {
      * @return true if the object is equal to this TupleDesc.
      */
     public boolean equals(Object o) {
-        throw new UnsupportedOperationException("implement me!");
+        if (o.getClass() != TupleDesc.class){
+            return false;
+        }
+        TupleDesc cmp = (TupleDesc) o;
+        if (cmp.getSize() == schema.getSize() && cmp[typeAr.length].fieldType == schema[typeAr.length].fieldType){
+            return true;
+        }
     }
 
     public int hashCode() {
