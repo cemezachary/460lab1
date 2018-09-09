@@ -43,7 +43,7 @@ public class Tuple implements Serializable {
      * @return The TupleDesc representing the schema of this tuple.
      */
     public TupleDesc getTupleDesc() {
-        if (tuple,length == 0){
+        if (tuple.length == 0){
             throw new InvalidParameterException();
         }
         return tuple;
