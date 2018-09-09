@@ -184,13 +184,21 @@ public class TupleDesc implements Serializable {
      * @return true if the object is equal to this TupleDesc.
      */
     public boolean equals(Object o) {
-        if (o.getClass() != TupleDesc.class){
+        if (o instanceof TupleDesc == false){
             return false;
         }
         TupleDesc cmp = (TupleDesc) o;
-        if (cmp.getSize() == schema.getSize() && cmp[typeAr.length].fieldType == schema[typeAr.length].fieldType){
-            return true;
+        if (cmp.getSize() == schema.getSize()){
+            for (int i = 0; i < schema.length; i++){
+                if (cmp[i].fieldType != schema[i].fieldType){
+                    return false;
+                }
+            }
         }
+        else{
+            return false;
+        }
+        return true;
     }
 
     public int hashCode() {
@@ -210,6 +218,9 @@ public class TupleDesc implements Serializable {
     public String toString() {
         String desc = "";
         for (int i = 0; i < schema.length; i++){
+            if (i != schema.length - 1){
+                desc += schema[i].fieldName + "(" + schema[i].fieldType + ")" + ",";
+            }
             desc += schema[i].fieldName + "(" + schema[i].fieldType + ")";
         }
         return desc;
