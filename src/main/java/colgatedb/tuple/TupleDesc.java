@@ -224,7 +224,15 @@ public class TupleDesc implements Serializable {
      * @return the new TupleDesc
      */
     public static TupleDesc merge(TupleDesc td1, TupleDesc td2) {
-        throw new UnsupportedOperationException("implement me!");
+        int size = td1.numFields() + td2.numFields
+        TDItem[] merge = new TDItem[size];
+        for (int i = 0; i < td1.length; i++){
+            merge[i] = new TDItem(typeAr[i], fieldAr[i]);
+        }
+        for (int k = td1.length-1; k < merge.length; k++){
+            merge[k] = new TDItem(typeAr[k], fieldAr[k]);
+        }
+        return merge;
     }
 
 
