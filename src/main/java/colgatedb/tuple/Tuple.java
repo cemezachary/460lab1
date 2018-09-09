@@ -31,15 +31,19 @@ public class Tuple implements Serializable {
      *
      * @param td the schema of this tuple. It must be a valid TupleDesc instance with at least one field.
      */
+    private Tuple tuple;
     public Tuple(TupleDesc td) {
-        throw new UnsupportedOperationException("implement me!");
+        if (td.fieldName == null || td.fieldType == null){
+            throw new InvalidParameterException();
+        }
+        tuple = new Tuple(td);
     }
 
     /**
      * @return The TupleDesc representing the schema of this tuple.
      */
     public TupleDesc getTupleDesc() {
-        throw new UnsupportedOperationException("implement me!");
+        return tuple;
     }
 
     /**
