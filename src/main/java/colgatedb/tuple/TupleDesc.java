@@ -168,7 +168,8 @@ public class TupleDesc implements Serializable {
      */
     public Iterator<TDItem> iterator() {
         // hint: use java.util.Arrays.asList to convert array into a list, then return list iterator.
-        Iterator<TDItem> iter = schema.iterator();
+        List<TDItem> convert = Arrays.asList(schema);
+        Iterator<TDItem> iter = convert.iterator();
         return iter;
     }
 
