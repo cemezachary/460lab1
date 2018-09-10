@@ -233,7 +233,9 @@ public class TupleDesc implements Serializable {
      */
     public static TupleDesc merge(TupleDesc td1, TupleDesc td2) {
         int size = td1.numFields() + td2.numFields();
-        TDItem[] merge = new TDItem[size];
+        //TDItem[] merge = new TDItem[size];
+        String[] fields = new String[size];
+        //Type[] types = new
         for (int i = 0; i < td1.getSize(); i++){
             merge[i] = new TDItem(td1.getFieldType(i), td1.getFieldName(i));
         }
