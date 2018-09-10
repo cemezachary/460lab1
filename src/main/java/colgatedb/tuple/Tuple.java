@@ -35,18 +35,18 @@ public class Tuple implements Serializable {
     private Field[] type;
     public Tuple(TupleDesc td) {
         if (td.fieldName == null || td.fieldType == null){
-            throw new InvalidParameterException();
+            throw new Exception();
         }
         schema = td;
-        type = new Field[td.length];
+        type = new Field[td.getSize()];
     }
 
     /**
      * @return The TupleDesc representing the schema of this tuple.
      */
     public TupleDesc getTupleDesc() {
-        if (schema.length == 0){
-            throw new InvalidParameterException();
+        if (schema.getSize() == 0){
+            throw new Exception();
         }
         return schema;
     }
@@ -60,10 +60,10 @@ public class Tuple implements Serializable {
      * @throws NoSuchElementException if i is not a valid field reference.
      */
     public void setField(int i, Field f) {
-        if (i >= schema.length || i < 0){
+        if (i >= schema.getSize() || i < 0){
             throw new NoSuchElementException();
         }
-        if (f.fieldType.equals(schema[i].fieldType)){
+        if (f.getType().equals(schema.getFieldType(i))){
             schema[i] = f;
         }
         else{
@@ -77,7 +77,7 @@ public class Tuple implements Serializable {
      * @throws NoSuchElementException if i is not a valid field reference.
      */
     public Field getField(int i) {
-        if (i >= schema.length || i < 0){
+        if (i >= schema.getSize() || i < 0){
             throw new NoSuchElementException();
         }
         if (schema[i] == null){
@@ -95,9 +95,9 @@ public class Tuple implements Serializable {
      * where \t is a tab and \n is a newline
      */
     public String toString() {
-        Srting desc = "";
-        for (int i = 0; i < schema.length; i++){
-            if (i != schema.length - 1){
+        String desc = "";
+        for (int i = 0; i < schema.getSize(); i++){
+            if (i != schema.getSize() - 1){
                 desc += schema[i] + "\t";
             }
             desc += schema[i] + "\t" + "\n";
@@ -119,7 +119,7 @@ public class Tuple implements Serializable {
      * @return The RecordId representing the location of this tuple on disk. May be null.
      */
     public RecordId getRecordId() {
-         // you do not need to implement for lab 1
+        // you do not need to implement for lab 1
         throw new UnsupportedOperationException("implement me!");
     }
 
@@ -129,7 +129,7 @@ public class Tuple implements Serializable {
      * @param rid the new RecordId for this tuple.
      */
     public void setRecordId(RecordId rid) {
-         // you do not need to implement for lab 1
+        // you do not need to implement for lab 1
         throw new UnsupportedOperationException("implement me!");
     }
 }
