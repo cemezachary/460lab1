@@ -32,18 +32,20 @@ public class Tuple implements Serializable {
      * @param td the schema of this tuple. It must be a valid TupleDesc instance with at least one field.
      */
     private TupleDesc schema;
+    private Field[] type;
     public Tuple(TupleDesc td) {
         if (td.fieldName == null || td.fieldType == null){
             throw new InvalidParameterException();
         }
-        schema = new Tuple(td);
+        schema = td;
+        type = new Field[td.length];
     }
 
     /**
      * @return The TupleDesc representing the schema of this tuple.
      */
     public TupleDesc getTupleDesc() {
-        if (tuple.length == 0){
+        if (schema.length == 0){
             throw new InvalidParameterException();
         }
         return schema;
@@ -58,17 +60,15 @@ public class Tuple implements Serializable {
      * @throws NoSuchElementException if i is not a valid field reference.
      */
     public void setField(int i, Field f) {
-        for (int k = 0; k < tuple.length; k++){
-            if (k == i){
-                if (f.fieldType.equals(tuple[i].fieldType)){
-                    tuple[i] = f;
-                }
-                else{
-                    throw new RuntimeException();
-                }
-            }
+        if (i >= schema.length || i < 0){
+            throw new NoSuchElementException();
         }
-        throw new NoSuchElementException();
+        if (f.fieldType.equals(schema[i].fieldType)){
+            schema[i] = f;
+        }
+        else{
+            throw new RuntimeException();
+        }
     }
 
     /**
@@ -77,13 +77,13 @@ public class Tuple implements Serializable {
      * @throws NoSuchElementException if i is not a valid field reference.
      */
     public Field getField(int i) {
-        if (i >= tuple.length || i < 0){
+        if (i >= schema.length || i < 0){
             throw new NoSuchElementException();
         }
-        if (tuple[i] == null){
+        if (schema[i] == null){
             return null;
         }
-        return tuple[i];
+        return schema[i];
     }
 
     /**
@@ -96,8 +96,11 @@ public class Tuple implements Serializable {
      */
     public String toString() {
         Srting desc = "";
-        for (int i = 0; i < tuple.length; i++){
-            desc += tuple[i] + "\t" + "\n";
+        for (int i = 0; i < schema.length; i++){
+            if (i != schema.length - 1){
+                desc += schema[i] + "\t";
+            }
+            desc += schema[i] + "\t" + "\n";
         }
         return desc;
     }
@@ -108,7 +111,7 @@ public class Tuple implements Serializable {
      */
     public Iterator<Field> fields() {
         // hint: use java.util.Arrays.asList to convert array into a list, then return list iterator.
-        Iterator<Field> iter = tuple.iterator();
+        Iterator<Field> iter = schema.iterator();
         return iter;
     }
 
