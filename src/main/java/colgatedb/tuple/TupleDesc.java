@@ -61,9 +61,9 @@ public class TupleDesc implements Serializable {
      * @param fieldAr array specifying the names of the fields. Note that names may
      *                be null.
      */
-    public TupleDesc(Type[] typeAr, String[] fieldAr) {
+    public TupleDesc(Type[] typeAr, String[] fieldAr) throws Exception {
         if (typeAr.length == 0 || typeAr.length != fieldAr.length){
-            throw new InvalidParameterException();
+            throw new Exception();
         }
         schema = new TDItem[typeAr.length];
         for (int i = 0; i < schema.length; i++){
@@ -80,8 +80,8 @@ public class TupleDesc implements Serializable {
      *               TupleDesc. It must contain at least one entry.
      */
     public TupleDesc(Type[] typeAr) {
-        if (typeAr.length == 0 || typeAr.length != fieldAr.length){
-            throw new InvalidParameterException();
+        if (typeAr.length == 0){
+            throw new Exception();
         }
         schema = new TDItem[typeAr.length];
         for (int i = 0; i < schema.length; i++){
@@ -95,9 +95,9 @@ public class TupleDesc implements Serializable {
      */
     public int numFields() {
         if (schema.length == 0){
-            throw new InvalidParameterException();
+            throw new Exception();
         }
-        return schema.length;    
+        return schema.length;
         //throw new UnsupportedOperationException("implement me!");
     }
 
@@ -144,7 +144,7 @@ public class TupleDesc implements Serializable {
                 if ((schema[i].fieldName).equals(name)) {
                     return i;
                 }
-            }   
+            }
         }
         throw new NoSuchElementException();
     }
@@ -159,7 +159,7 @@ public class TupleDesc implements Serializable {
     public int getSize() {
         int total = 0;
         for (int i = 0; i < schema.length; i++){
-            total += (schema[i].fieldName).getLen();
+            total += (schema[i].fieldName).length();
             total += (schema[i].fieldType).getLen();
         }
         return total;
@@ -184,7 +184,7 @@ public class TupleDesc implements Serializable {
      * @return true if the object is equal to this TupleDesc.
      */
     public boolean equals(Object o) {
-        if (o instanceof TupleDesc == false){
+        if (!o instanceof TupleDesc){
             return false;
         }
         TupleDesc cmp = (TupleDesc) o;
@@ -235,7 +235,7 @@ public class TupleDesc implements Serializable {
      * @return the new TupleDesc
      */
     public static TupleDesc merge(TupleDesc td1, TupleDesc td2) {
-        int size = td1.numFields() + td2.numFields
+        int size = td1.numFields() + td2.numFields;
         TDItem[] merge = new TDItem[size];
         for (int i = 0; i < td1.length; i++){
             merge[i] = new TDItem(typeAr[i], fieldAr[i]);
