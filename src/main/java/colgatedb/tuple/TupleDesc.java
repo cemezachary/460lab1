@@ -188,7 +188,7 @@ public class TupleDesc implements Serializable {
         TupleDesc cmp = (TupleDesc) o;
         if (cmp.getSize() == schema.length){
             for (int i = 0; i < schema.length; i++){
-                if (cmp[i].fieldType != schema[i].fieldType){
+                if (cmp.getFieldType(i) != schema[i].fieldType){
                     return false;
                 }
             }
