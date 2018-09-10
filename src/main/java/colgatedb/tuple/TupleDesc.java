@@ -79,7 +79,7 @@ public class TupleDesc implements Serializable {
      * @param typeAr array specifying the number of and types of fields in this
      *               TupleDesc. It must contain at least one entry.
      */
-    public TupleDesc(Type[] typeAr) {
+    public TupleDesc(Type[] typeAr) throws Exception {
         if (typeAr.length == 0){
             throw new Exception();
         }
@@ -87,18 +87,16 @@ public class TupleDesc implements Serializable {
         for (int i = 0; i < schema.length; i++){
             schema[i] = new TDItem(typeAr[i], "");
         }
-        //throw new UnsupportedOperationException("implement me!");
     }
 
     /**
      * @return the number of fields in this TupleDesc
      */
-    public int numFields() {
+    public int numFields() throws Exception {
         if (schema.length == 0){
             throw new Exception();
         }
         return schema.length;
-        //throw new UnsupportedOperationException("implement me!");
     }
 
     /**
@@ -114,7 +112,6 @@ public class TupleDesc implements Serializable {
             throw new NoSuchElementException();
         }
         return schema[i].fieldType;
-        //throw new UnsupportedOperationException("implement me!");
     }
 
     /**
@@ -184,11 +181,11 @@ public class TupleDesc implements Serializable {
      * @return true if the object is equal to this TupleDesc.
      */
     public boolean equals(Object o) {
-        if (!o instanceof TupleDesc){
+        if (o instanceof TupleDesc == false){
             return false;
         }
         TupleDesc cmp = (TupleDesc) o;
-        if (cmp.getSize() == schema.getSize()){
+        if (cmp.getSize() == schema.length){
             for (int i = 0; i < schema.length; i++){
                 if (cmp[i].fieldType != schema[i].fieldType){
                     return false;
@@ -235,13 +232,13 @@ public class TupleDesc implements Serializable {
      * @return the new TupleDesc
      */
     public static TupleDesc merge(TupleDesc td1, TupleDesc td2) {
-        int size = td1.numFields() + td2.numFields;
+        int size = td1.numFields() + td2.numFields();
         TDItem[] merge = new TDItem[size];
-        for (int i = 0; i < td1.length; i++){
-            merge[i] = new TDItem(typeAr[i], fieldAr[i]);
+        for (int i = 0; i < td1.getSize(); i++){
+            merge[i] = new TDItem(td1.getFieldType(i), td1.getFieldName(i));
         }
-        for (int k = td1.length-1; k < merge.length; k++){
-            merge[k] = new TDItem(typeAr[k], fieldAr[k]);
+        for (int k = td1.getSize()-1; k < merge.length; k++){
+            merge[k] = new TDItem(td2.getFieldType(k), td2.getFieldName(k));
         }
         return merge;
     }
