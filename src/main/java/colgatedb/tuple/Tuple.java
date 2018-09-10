@@ -32,7 +32,7 @@ public class Tuple implements Serializable {
      * @param td the schema of this tuple. It must be a valid TupleDesc instance with at least one field.
      */
     private TupleDesc schema;
-    private Field[] type;
+    private Field[] data;
     public Tuple(TupleDesc td) {
         if (td.fieldName == null || td.fieldType == null){
             throw new Exception();
