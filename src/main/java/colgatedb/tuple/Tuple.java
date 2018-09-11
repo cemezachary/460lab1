@@ -31,24 +31,21 @@ public class Tuple implements Serializable {
      *
      * @param td the schema of this tuple. It must be a valid TupleDesc instance with at least one field.
      */
-    private TupleDesc schema;
+    private TupleDesc desc;
     private Field[] data;
     public Tuple(TupleDesc td) {
-        if (td.fieldName == null || td.fieldType == null){
-            throw new Exception();
-        }
-        schema = td;
-        type = new Field[td.getSize()];
+        desc = td;
+        data = new Field[td.numFields()];
     }
 
     /**
      * @return The TupleDesc representing the schema of this tuple.
      */
     public TupleDesc getTupleDesc() {
-        if (schema.getSize() == 0){
-            throw new Exception();
-        }
-        return schema;
+        //if (desc.getSize() == 0){
+        //    throw new Exception();
+        //}
+        return desc;
     }
 
     /**
@@ -60,11 +57,11 @@ public class Tuple implements Serializable {
      * @throws NoSuchElementException if i is not a valid field reference.
      */
     public void setField(int i, Field f) {
-        if (i >= schema.getSize() || i < 0){
+        if (i >= desc.numFields() || i < 0){
             throw new NoSuchElementException();
         }
-        if (f.getType().equals(schema.getFieldType(i))){
-            schema[i] = f;
+        if (f.getType().equals(desc.getFieldType(i))){
+            data[i] = f;
         }
         else{
             throw new RuntimeException();
@@ -77,13 +74,10 @@ public class Tuple implements Serializable {
      * @throws NoSuchElementException if i is not a valid field reference.
      */
     public Field getField(int i) {
-        if (i >= schema.getSize() || i < 0){
+        if (i >= desc.numFields() || i < 0){
             throw new NoSuchElementException();
         }
-        if (schema[i] == null){
-            return null;
-        }
-        return schema[i];
+        return data[i];
     }
 
     /**
@@ -95,14 +89,16 @@ public class Tuple implements Serializable {
      * where \t is a tab and \n is a newline
      */
     public String toString() {
-        String desc = "";
-        for (int i = 0; i < schema.getSize(); i++){
-            if (i != schema.getSize() - 1){
-                desc += schema[i] + "\t";
+        String vals = "";
+        for (int i = 0; i < desc.numFields(); i++){
+            if (i != desc.numFields() - 1){
+                vals += data[i] + "\t";
             }
-            desc += schema[i] + "\t" + "\n";
+            else{
+            vals += data[i];
+            }
         }
-        return desc;
+        return vals;
     }
 
 
@@ -111,7 +107,7 @@ public class Tuple implements Serializable {
      */
     public Iterator<Field> fields() {
         // hint: use java.util.Arrays.asList to convert array into a list, then return list iterator.
-        Iterator<Field> iter = schema.iterator();
+        Iterator<Field> iter = (Arrays.asList(data).iterator());
         return iter;
     }
 
