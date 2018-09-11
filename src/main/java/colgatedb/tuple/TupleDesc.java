@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
+import java.util.ArrayList;
 
 /**
  * ColgateDB
@@ -61,9 +62,10 @@ public class TupleDesc implements Serializable {
      * @param fieldAr array specifying the names of the fields. Note that names may
      *                be null.
      */
-    public TupleDesc(Type[] typeAr, String[] fieldAr) throws Exception {
+    public TupleDesc(Type[] typeAr, String[] fieldAr){
         if (typeAr.length == 0 || typeAr.length != fieldAr.length){
-            throw new Exception();
+            schema = new TDItem[0];
+            return;
         }
         schema = new TDItem[typeAr.length];
         for (int i = 0; i < schema.length; i++){
@@ -79,9 +81,10 @@ public class TupleDesc implements Serializable {
      * @param typeAr array specifying the number of and types of fields in this
      *               TupleDesc. It must contain at least one entry.
      */
-    public TupleDesc(Type[] typeAr) throws Exception {
+    public TupleDesc(Type[] typeAr) {
         if (typeAr.length == 0){
-            throw new Exception();
+            schema = new TDItem[0];
+            return;
         }
         schema = new TDItem[typeAr.length];
         for (int i = 0; i < schema.length; i++){
@@ -92,10 +95,7 @@ public class TupleDesc implements Serializable {
     /**
      * @return the number of fields in this TupleDesc
      */
-    public int numFields() throws Exception {
-        if (schema.length == 0){
-            throw new Exception();
-        }
+    public int numFields(){
         return schema.length;
     }
 
@@ -156,8 +156,7 @@ public class TupleDesc implements Serializable {
     public int getSize() {
         int total = 0;
         for (int i = 0; i < schema.length; i++){
-            total += (schema[i].fieldName).length();
-            total += (schema[i].fieldType).getLen();
+            total += (schema[i].fieldType.getLen());
         }
         return total;
     }
@@ -168,8 +167,8 @@ public class TupleDesc implements Serializable {
      */
     public Iterator<TDItem> iterator() {
         // hint: use java.util.Arrays.asList to convert array into a list, then return list iterator.
-        ArrayList<TDItem> schema = new ArrayList<TDItem>(Arrays.asList(schema));
-        return schema.iterator();
+        Iterator<TDItem> iter = (Arrays.asList(schema).iterator());
+        return iter;
     }
 
     /**
@@ -233,16 +232,18 @@ public class TupleDesc implements Serializable {
      */
     public static TupleDesc merge(TupleDesc td1, TupleDesc td2) {
         int size = td1.numFields() + td2.numFields();
-        TupleDesc[] merge = new TupleDesc[size];
-        //String[] fields = new String[size];
-        //Type[] types = new
+        String[] fields = new String[size];
+        Type[] types = new Type[size];
         for (int i = 0; i < td1.getSize(); i++){
-            merge[i] = new TDItem(td1.getFieldType(i), td1.getFieldName(i));
+            fields[i] = (td1.getFieldName(i));
+            types[i] = (td1.getFieldType(i));
         }
-        for (int k = td1.getSize()-1; k < merge.length; k++){
-            merge[k] = new TDItem(td2.getFieldType(k), td2.getFieldName(k));
+        for (int k = td1.getSize()-1; k < size; k++){
+            fields[k] = (td1.getFieldName(k));
+            types[k] = (td1.getFieldType(k));
         }
-        return merge;
+        TupleDesc desc = new TupleDesc(types, fields);
+        return desc;
     }
 
 
