@@ -112,7 +112,7 @@ public class SlottedPage implements Page {
         //It'll skip all of the null elements. Can I possibly keep track
         //of the amount that is in the list then subtract that from the
         //total to get the # of empty slots
-        
+
         /* Or maybe just make a forloop and whenever isSlotEmpty() == true,
         add 1 to the count
          */
@@ -124,7 +124,7 @@ public class SlottedPage implements Page {
      * @throws PageException if slot is empty
      */
     public Tuple getTuple(int slotno) {
-        if (isSlotEmpty(slotno)){ throw new PageException();}
+        //if (isSlotEmpty(slotno)){ throw new PageException();}
         throw new UnsupportedOperationException("implement me!");
     }
 
