@@ -28,14 +28,17 @@ public class SimplePageId implements PageId {
      * @param tableId The table that is being referenced
      * @param pgNo    The page number in that table.
      */
+    private SimplePageId page;
     public SimplePageId(int tableId, int pgNo) {
-        throw new UnsupportedOperationException("implement me!");
+        //throw new UnsupportedOperationException("implement me!");
+        page = new SimplePageId(tableId, pgNo);
     }
 
     /**
      * @return the table associated with this PageId
      */
     public int getTableId() {
+        //return page.tableId;
         throw new UnsupportedOperationException("implement me!");
     }
 
@@ -44,6 +47,7 @@ public class SimplePageId implements PageId {
      * this PageId
      */
     public int pageNumber() {
+        //return page.pgNo;
         throw new UnsupportedOperationException("implement me!");
     }
 
@@ -56,6 +60,7 @@ public class SimplePageId implements PageId {
      * in a principled way!
      */
     public int hashCode() {
+        //return this.hash(tableId, pgNo);
         throw new UnsupportedOperationException("implement me!");
     }
 
@@ -67,6 +72,7 @@ public class SimplePageId implements PageId {
      * ids are the same)
      */
     public boolean equals(Object o) {
+
         throw new UnsupportedOperationException("implement me!");
     }
 
@@ -74,6 +80,9 @@ public class SimplePageId implements PageId {
      * @return Returns a string that is "x-y" where x is the tableId and y is the page number.
      */
     public String toString() {
+        //String info = "";
+        //info += page.tableId + "-" + page.pgNo; (in loop)
+        //return info;
         throw new UnsupportedOperationException("implement me!");
     }
 
