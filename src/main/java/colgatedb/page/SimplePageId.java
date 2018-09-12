@@ -31,6 +31,7 @@ public class SimplePageId implements PageId {
     private SimplePageId page;
     public SimplePageId(int tableId, int pgNo) {
         //throw new UnsupportedOperationException("implement me!");
+        //loop through a TupleDesc to find a page ID
         page = new SimplePageId(tableId, pgNo);
     }
 
