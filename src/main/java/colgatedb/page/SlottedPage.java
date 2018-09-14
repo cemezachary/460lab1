@@ -33,6 +33,7 @@ public class SlottedPage implements Page {
     private final PageId pid;
     private final TupleDesc td;
     private final int pageSize;
+    private Tuple[] tuples;
     // you will want to include additional instance variables here.
 
     // ------------------------------------------------
@@ -52,7 +53,7 @@ public class SlottedPage implements Page {
         this.pid = pid;
         this.td = td;
         this.pageSize = pageSize;
-         // write some code here to finish initializing this object
+        tuples = new Tuple[getNumSlots()];
         setBeforeImage();  // used for logging, leave this line at end of constructor
     }
 
@@ -71,7 +72,7 @@ public class SlottedPage implements Page {
 
     @Override
     public PageId getId() {
-        throw new UnsupportedOperationException("implement me!");
+        return this.pid;
     }
 
     /**
@@ -79,11 +80,7 @@ public class SlottedPage implements Page {
      * @return true if this slot is used (i.e., is occupied by a Tuple).
      */
     public boolean isSlotUsed(int slotno) {
-        throw new UnsupportedOperationException("implement me!");
-        /*if (slotno != 0){
-            return true;
-        }
-        return false;*/
+        return !(tuples[slotno] == null)
     }
 
     /**
@@ -107,15 +104,13 @@ public class SlottedPage implements Page {
      * @return the number of slots on this page that are empty.
      */
     public int getNumEmptySlots() {
-        throw new UnsupportedOperationException("implement me!");
-        //the iterator will go through each element that is a tuple.
-        //It'll skip all of the null elements. Can I possibly keep track
-        //of the amount that is in the list then subtract that from the
-        //total to get the # of empty slots
-
-        /* Or maybe just make a forloop and whenever isSlotEmpty() == true,
-        add 1 to the count
-         */
+        int count = 0;
+        for (int i = 0; i < pageSize; i++){
+            if (isSlotEmpty(i)){
+                count++;
+            }
+        }
+        return count;
     }
 
     /**
@@ -124,8 +119,10 @@ public class SlottedPage implements Page {
      * @throws PageException if slot is empty
      */
     public Tuple getTuple(int slotno) {
-        //if (isSlotEmpty(slotno)){ throw new PageException();}
-        throw new UnsupportedOperationException("implement me!");
+        if (isSlotEmpty(slotno)){ 
+            throw new PageException();
+        }
+        return tuples[slotno];
     }
 
     /**
@@ -140,7 +137,19 @@ public class SlottedPage implements Page {
      *                          passed tuple is a mismatch with TupleDesc of this page.
      */
     public void insertTuple(int slotno, Tuple t) {
-        throw new UnsupportedOperationException("implement me!");
+        if (isSlotEmpty(slotno)){
+            if (t.equals(this.TupleDesc)){
+                tuples[slotno] = t;
+                RecordId rid = new RecordId(pid, tupleno);
+                tuples[slotno].setRecordId(rid);
+            }
+            else{
+              throw new PageException();
+            }
+        }
+        else{
+            throw new PageException();
+        }
     }
 
     /**
@@ -154,7 +163,18 @@ public class SlottedPage implements Page {
      *                          passed tuple is a mismatch with TupleDesc of this page.
      */
     public void insertTuple(Tuple t) throws PageException {
-        throw new UnsupportedOperationException("implement me!");
+        for (int i = 0; i < pageSize; i++){
+            if (isSlotEmpty(i) && t.equals(this.TupleDesc)){
+                tuples[i] = t;
+                RecordId rid = new RecordId(pid, tupleno);
+                tuples[slotno].setRecordId(rid);
+                break;
+            }
+            else{
+                throw new PageException();
+            }
+        }
+        throw new PageException();
     }
 
     /**
@@ -166,7 +186,20 @@ public class SlottedPage implements Page {
      *                          slot is already empty.
      */
     public void deleteTuple(Tuple t) throws PageException {
-        throw new UnsupportedOperationException("implement me!");
+        if (t.getRecordId() == null){
+            throw new PageException();
+        }
+        for (int i = 0; i < pageSize; i++){
+            if (isSlotUsed(i)){
+                if(tuples[i].getRecordId().equals(t.getRecordId())){
+                    tuples[i] = null;
+                    break;
+                }
+                else{
+                    throw new PageException();
+                }
+            }
+        }
     }
 
 
@@ -177,7 +210,16 @@ public class SlottedPage implements Page {
      * (Note: calling remove on this iterator throws an UnsupportedOperationException)
      */
     public Iterator<Tuple> iterator() {
-        throw new UnsupportedOperationException("implement me!");
+        Tuple[] usedpages = new Tuple[getNumSlots() - getNumEmptySlots()];
+        int j = 0;
+        for (int i = 0; i < pageSize; i++){
+            if (isSlotUsed(i)){
+                usedpages[j] = tuples[i];
+                j++;
+            }
+        }
+        Iterator<Tuple> iter = new TupList(Arrays.asList(usedpages)); 
+        return iter;
     }
 
     @Override
@@ -208,5 +250,37 @@ public class SlottedPage implements Page {
             oldData = getPageData().clone();
         }
     }
+    class TupList implements Iterable<Tuple> {
+
+    List<Tuple> list;
+    private int currSize;
+
+    public TupList(List<Tuple> newlist) {
+        list = newlist;
+        currSize = 0;
+    }
+        
+            @Override
+            public boolean hasNext() {
+                return currSize list.size();
+            }
+
+            @Override
+            public Tuple next() {
+                if (!hasNext()){
+                    throw new NoSuchElementException();
+                }
+                Tuple nextVal = list.get(currSize);
+                currSize++;
+                return nextVal;
+            }
+
+            @Override
+            public void remove() {
+                throw new UnsupportedOperationException();
+            }
+        }
+    }
+}
 
 }
