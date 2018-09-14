@@ -19,6 +19,8 @@ package colgatedb.page;
  * A simple identifier for page objects.
  */
 public class SimplePageId implements PageId {
+    private int tableId;
+    private int pgNo;
 
 
     /**
@@ -39,8 +41,7 @@ public class SimplePageId implements PageId {
      * @return the table associated with this PageId
      */
     public int getTableId() {
-        //return page.tableId;
-        throw new UnsupportedOperationException("implement me!");
+        return this.tableId;
     }
 
     /**
@@ -48,8 +49,7 @@ public class SimplePageId implements PageId {
      * this PageId
      */
     public int pageNumber() {
-        //return page.pgNo;
-        throw new UnsupportedOperationException("implement me!");
+        return this.pgNo;
     }
 
     /**
@@ -61,8 +61,7 @@ public class SimplePageId implements PageId {
      * in a principled way!
      */
     public int hashCode() {
-        //return this.hash(tableId, pgNo);
-        throw new UnsupportedOperationException("implement me!");
+        return this.hash(tableId, pgNo);
     }
 
     /**
@@ -73,9 +72,16 @@ public class SimplePageId implements PageId {
      * ids are the same)
      */
     public boolean equals(Object o) {
-
-        throw new UnsupportedOperationException("implement me!");
+        if (o instanceof PageId == false){
+            return false;
+        }
+        PageId cmp = (PageId) o;
+        if ((cmp.pgNo == this.pgNo) && (cmp.tableId == this.tableId)){
+            return true;
+        }
+        return false;
     }
+        
 
     /**
      * @return Returns a string that is "x-y" where x is the tableId and y is the page number.
@@ -84,7 +90,7 @@ public class SimplePageId implements PageId {
         //String info = "";
         //info += page.tableId + "-" + page.pgNo; (in loop)
         //return info;
-        throw new UnsupportedOperationException("implement me!");
+        return Integer.toString(this.tableId) + "-" + Integer.toString(this.pgNo);
     }
 
     /**
