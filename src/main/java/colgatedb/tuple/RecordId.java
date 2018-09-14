@@ -63,8 +63,15 @@ public class RecordId implements Serializable {
      */
     @Override
     public boolean equals(Object o) {
-         // you do not need to implement for lab 1
-        throw new UnsupportedOperationException("implement me!");
+        if (o instanceof RecordId == false){
+            return false;
+        }
+        RecordId cmp = (RecordId) o;
+        if ((cmp.pid == this.pid) && (cmp.tupleno == this.tupleno)){
+            return true;
+        }
+        return false;
+
     }
 
     /**
@@ -78,8 +85,7 @@ public class RecordId implements Serializable {
      */
     @Override
     public int hashCode() {
-         // you do not need to implement for lab 1
-        throw new UnsupportedOperationException("implement me!");
+         return this.hash(pid, tupleno);
 
     }
 
