@@ -33,6 +33,7 @@ public class Tuple implements Serializable {
      */
     private TupleDesc desc;
     private Field[] data;
+    private RecordId rid = null;
     public Tuple(TupleDesc td) {
         desc = td;
         data = new Field[td.numFields()];
@@ -115,8 +116,7 @@ public class Tuple implements Serializable {
      * @return The RecordId representing the location of this tuple on disk. May be null.
      */
     public RecordId getRecordId() {
-        // you do not need to implement for lab 1
-        throw new UnsupportedOperationException("implement me!");
+        return rid;
     }
 
     /**
@@ -125,7 +125,6 @@ public class Tuple implements Serializable {
      * @param rid the new RecordId for this tuple.
      */
     public void setRecordId(RecordId rid) {
-        // you do not need to implement for lab 1
-        throw new UnsupportedOperationException("implement me!");
+        this.rid = rid;
     }
 }
