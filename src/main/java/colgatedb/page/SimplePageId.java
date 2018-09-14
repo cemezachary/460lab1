@@ -28,11 +28,11 @@ public class SimplePageId implements PageId {
      * @param tableId The table that is being referenced
      * @param pgNo    The page number in that table.
      */
-    private SimplePageId page;
     public SimplePageId(int tableId, int pgNo) {
         //throw new UnsupportedOperationException("implement me!");
         //loop through a TupleDesc to find a page ID
-        page = new SimplePageId(tableId, pgNo);
+        this.tableId = tableId;
+        this.pgNo = pgNo;
     }
 
     /**
