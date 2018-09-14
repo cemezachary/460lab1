@@ -21,6 +21,8 @@ import java.io.Serializable;
  * specific table.
  */
 public class RecordId implements Serializable {
+    private PageId pid;
+    private int tupleno;
 
     private static final long serialVersionUID = 1L;
 
@@ -35,23 +37,22 @@ public class RecordId implements Serializable {
      */
     public RecordId(PageId pid, int tupleno) {
          // you do not need to implement for lab 1
-        throw new UnsupportedOperationException("implement me!");
+        this.pid = pid;
+        this.tupleno = tupleno;
     }
 
     /**
      * @return the tuple number this RecordId references.
      */
     public int tupleno() {
-         // you do not need to implement for lab 1
-        throw new UnsupportedOperationException("implement me!");
+        return this.tupleno;
     }
 
     /**
      * @return the page id this RecordId references.
      */
     public PageId getPageId() {
-         // you do not need to implement for lab 1
-        throw new UnsupportedOperationException("implement me!");
+        return this.pid;
     }
 
     /**
