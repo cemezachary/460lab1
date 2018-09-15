@@ -80,7 +80,7 @@ public class SlottedPage implements Page {
      * @return true if this slot is used (i.e., is occupied by a Tuple).
      */
     public boolean isSlotUsed(int slotno) {
-        return !(tuples[slotno] == null)
+        return !(tuples[slotno] == null);
     }
 
     /**
@@ -262,7 +262,7 @@ public class SlottedPage implements Page {
         
             @Override
             public boolean hasNext() {
-                return currSize list.size();
+                return currSize < list.size();
             }
 
             @Override
@@ -281,6 +281,5 @@ public class SlottedPage implements Page {
             }
         }
     }
-}
 
 }
