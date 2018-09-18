@@ -67,11 +67,10 @@ public class RecordId implements Serializable {
             return false;
         }
         RecordId cmp = (RecordId) o;
-        if ((cmp.pid == this.pid) && (cmp.tupleno == this.tupleno)){
+        if (cmp.getPageId().equals(this.getPageId()) && (cmp.tupleno() == this.tupleno())){
             return true;
         }
         return false;
-
     }
 
     /**
@@ -85,8 +84,7 @@ public class RecordId implements Serializable {
      */
     @Override
     public int hashCode() {
-         return this.hash(pid, tupleno);
-
+        return pid.hashCode() + this.tupleno;
     }
 
 }
