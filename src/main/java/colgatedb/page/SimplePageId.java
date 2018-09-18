@@ -61,7 +61,7 @@ public class SimplePageId implements PageId {
      * in a principled way!
      */
     public int hashCode() {
-        return this.hash(tableId, pgNo);
+        return (tableId+7) + (pgNo-7);
     }
 
     /**
@@ -72,10 +72,10 @@ public class SimplePageId implements PageId {
      * ids are the same)
      */
     public boolean equals(Object o) {
-        if (o instanceof PageId == false){
+        if (o instanceof SimplePageId == false){
             return false;
         }
-        PageId cmp = (PageId) o;
+        SimplePageId cmp = (SimplePageId) o;
         if ((cmp.pgNo == this.pgNo) && (cmp.tableId == this.tableId)){
             return true;
         }
