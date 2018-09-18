@@ -1,10 +1,4 @@
-package colgatedb.tuple;
-
-import java.io.Serializable;
-import java.util.Arrays;
-import java.util.Iterator;
-import java.util.NoSuchElementException;
-
+package colgatedb.page;
 /**
  * ColgateDB
  * @author Michael Hay mhay@colgate.edu
@@ -16,115 +10,37 @@ import java.util.NoSuchElementException;
  * The contents of this file are taken almost verbatim from the SimpleDB project.
  * We are grateful for Sam's permission to use and adapt his materials.
  */
-
 /**
- * Tuple maintains information about the contents of a tuple. Tuples have a
- * specified schema specified by a TupleDesc object and contain Field objects
- * with the data for each field.
+ * PageId is an interface to a specific page of a specific table.
  */
-public class Tuple implements Serializable {
-
-    private static final long serialVersionUID = 1L;
-
+public interface PageId {
     /**
-     * Create a new tuple with the specified schema (type).
+     * @return the unique tableid hashcode for this PageId
+     */
+    int getTableId();
+    /**
+     * @return the unique page number of this PageId
+     */
+    int pageNumber();
+    /**
+     * @return a hash code for this page, represented by the concatenation of
+     * the table number and the page number (needed if a PageId is used as a
+     * key in a hash table in a buffer manager, for example.)
+     */
+    int hashCode();
+    /**
+     * Compares one PageId to another.
      *
-     * @param td the schema of this tuple. It must be a valid TupleDesc instance with at least one field.
+     * @param o The object to compare against (must be a PageId)
+     * @return true if the objects are equal (e.g., page numbers and table
+     * ids are the same)
      */
-    private TupleDesc desc;
-    private Field[] data;
-    private RecordId rid = null;
-    public Tuple(TupleDesc td) {
-        desc = td;
-        data = new Field[td.numFields()];
-    }
-
+    boolean equals(Object o);
     /**
-     * @return The TupleDesc representing the schema of this tuple.
-     */
-    public TupleDesc getTupleDesc() {
-        //if (desc.getSize() == 0){
-        //    throw new Exception();
-        //}
-        return desc;
-    }
-
-    /**
-     * Change the value of the ith field of this tuple.
-     *
-     * @param i index of the field to change. It must be a valid index.
-     * @param f new value for the field.
-     * @throws RuntimeException if f does not match type of field i.
-     * @throws NoSuchElementException if i is not a valid field reference.
-     */
-    public void setField(int i, Field f) {
-        if (i >= desc.numFields() || i < 0){
-            throw new NoSuchElementException();
-        }
-        if (f.getType().equals(desc.getFieldType(i))){
-            data[i] = f;
-        }
-        else{
-            throw new RuntimeException();
-        }
-    }
-
-    /**
-     * @param i field index to return. Must be a valid index.
-     * @return the value of the ith field, or null if it has not been set.
-     * @throws NoSuchElementException if i is not a valid field reference.
-     */
-    public Field getField(int i) {
-        if (i >= desc.numFields() || i < 0){
-            throw new NoSuchElementException();
-        }
-        return data[i];
-    }
-
-    /**
-     * Returns the contents of this Tuple as a string. Note that to pass the
-     * system tests, the format needs to be as follows:
+     * Return a representation of this page id object as a collection of
+     * integers (used for logging)
      * <p>
-     * column1\tcolumn2\tcolumn3\t...\tcolumnN\n
-     * <p>
-     * where \t is a tab and \n is a newline
+     * This class MUST have a constructor that accepts n integer parameters,
+     * where n is the number of integers returned in the array from serialize.
      */
-    public String toString() {
-        String vals = "";
-        for (int i = 0; i < desc.numFields(); i++){
-            if (i != desc.numFields() - 1){
-                vals += data[i] + "\t";
-            }
-            else{
-            vals += data[i];
-            }
-        }
-        return vals;
-    }
-
-
-    /**
-     * @return An iterator which iterates over all the fields of this tuple
-     */
-    public Iterator<Field> fields() {
-        // hint: use java.util.Arrays.asList to convert array into a list, then return list iterator.
-        Iterator<Field> iter = (Arrays.asList(data).iterator());
-        return iter;
-    }
-
-    /**
-     * @return The RecordId representing the location of this tuple on disk. May be null.
-     */
-    public RecordId getRecordId() {
-        return rid;
-    }
-
-    /**
-     * Set the RecordId information for this tuple.
-     *
-     * @param rid the new RecordId for this tuple.
-     */
-    public void setRecordId(RecordId rid) {
-        this.rid = rid;
-    }
-}
+    int[] serialize();
