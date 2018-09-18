@@ -1,7 +1,5 @@
 package colgatedb.page;
 
-import colgatedb.tuple.Field;
-import colgatedb.tuple.Tuple;
 import colgatedb.tuple.TupleDesc;
 
 import java.io.*;
@@ -65,7 +63,8 @@ public class SlottedPageFormatter {
      * @return number of tuples that this page can hold
      */
     public static int computePageCapacity(int pageSize, TupleDesc td) {
-        throw new UnsupportedOperationException("implement me!");
+        int numtuples = (int) Math.floor((pageSize*8)/(td.getSize()*8 + 1));
+        return numtuples;
     }
 
     /**
@@ -76,7 +75,8 @@ public class SlottedPageFormatter {
      * @return the size of the header in bytes.
      */
     public static int getHeaderSize(int numSlots) {
-        throw new UnsupportedOperationException("implement me!");
+        int hsize = (int) Math.ceil(numSlots/8);
+        return hsize;
     }
 
     /**
@@ -130,7 +130,12 @@ public class SlottedPageFormatter {
      * @return
      */
     private static boolean isSlotUsed(int i, byte[] header) {
-        throw new UnsupportedOperationException("implement me!");
+        if (header[i] == 1){
+            return true;
+        }
+        return false;
+        /* need cases in which i is too big or negative so I can throw
+        * an exception*/
     }
 
     /**
@@ -140,6 +145,11 @@ public class SlottedPageFormatter {
      * @param isUsed if true, slot should be set to 1; if false, set to 0
      */
     private static void markSlot(int i, byte[] header, boolean isUsed) {
-        throw new UnsupportedOperationException("implement me!");
+        if (header[i] == 0) {
+            isUsed = false;
+        }
+        else {
+            isUsed = true;
+        }
     }
 }
