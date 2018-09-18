@@ -3,6 +3,7 @@ package colgatedb.page;
 import colgatedb.tuple.RecordId;
 import colgatedb.tuple.Tuple;
 import colgatedb.tuple.TupleDesc;
+import colgatedb.page.PageException;
 
 import java.util.Arrays;
 import java.util.Iterator;
@@ -80,7 +81,7 @@ public class SlottedPage implements Page {
      * @return true if this slot is used (i.e., is occupied by a Tuple).
      */
     public boolean isSlotUsed(int slotno) {
-        return !(tuples[slotno] == null);
+        return (!(tuples[slotno] == null));
     }
 
     /**
@@ -97,7 +98,7 @@ public class SlottedPage implements Page {
      * the page size and the schema (TupleDesc).
      */
     public int getNumSlots() {
-         return 5;  // this will need to be revised later
+        return 5;
     }
 
     /**
@@ -105,7 +106,7 @@ public class SlottedPage implements Page {
      */
     public int getNumEmptySlots() {
         int count = 0;
-        for (int i = 0; i < pageSize; i++){
+        for (int i = 0; i < tuples.length; i++){
             if (isSlotEmpty(i)){
                 count++;
             }
@@ -118,9 +119,13 @@ public class SlottedPage implements Page {
      * @return returns the Tuple at given slot
      * @throws PageException if slot is empty
      */
-    public Tuple getTuple(int slotno) {
+    public Tuple getTuple(int slotno){
+          if (slotno >= tuples.length){
+            throw new PageException("slotno is out of range");
+          }
+        
         if (isSlotEmpty(slotno)){ 
-            throw new PageException();
+            throw new PageException("Slot is empty");
         }
         return tuples[slotno];
     }
@@ -137,18 +142,21 @@ public class SlottedPage implements Page {
      *                          passed tuple is a mismatch with TupleDesc of this page.
      */
     public void insertTuple(int slotno, Tuple t) {
+        if (slotno >= tuples.length){
+            throw new PageException("slotno is out of range");
+        }
+        
+        if (!this.td.equals(t.getTupleDesc())){
+            throw new PageException("Mismatched types");
+        }
+        
         if (isSlotEmpty(slotno)){
-            if (t.equals(this.TupleDesc)){
-                tuples[slotno] = t;
-                RecordId rid = new RecordId(pid, tupleno);
-                tuples[slotno].setRecordId(rid);
-            }
-            else{
-              throw new PageException();
-            }
+            tuples[slotno] = t;
+            RecordId rid = new RecordId(pid, slotno);
+            tuples[slotno].setRecordId(rid);
         }
         else{
-            throw new PageException();
+            throw new PageException("Slot is full");
         }
     }
 
@@ -163,18 +171,24 @@ public class SlottedPage implements Page {
      *                          passed tuple is a mismatch with TupleDesc of this page.
      */
     public void insertTuple(Tuple t) throws PageException {
-        for (int i = 0; i < pageSize; i++){
-            if (isSlotEmpty(i) && t.equals(this.TupleDesc)){
+        if (!this.td.equals(t.getTupleDesc())){
+            throw new PageException("Mismatched types");
+        }
+        
+        int fullcheck = 0;
+        for (int i = 0; i < tuples.length; i++){
+            if (isSlotEmpty(i) && t.getTupleDesc().equals(this.td)){
                 tuples[i] = t;
-                RecordId rid = new RecordId(pid, tupleno);
-                tuples[slotno].setRecordId(rid);
+                RecordId rid = new RecordId(pid, i);
+                tuples[i].setRecordId(rid);
+                fullcheck++;
                 break;
             }
-            else{
-                throw new PageException();
-            }
         }
-        throw new PageException();
+        
+        if (fullcheck == 0){
+            throw new PageException("No empty slots");
+        }
     }
 
     /**
@@ -187,18 +201,23 @@ public class SlottedPage implements Page {
      */
     public void deleteTuple(Tuple t) throws PageException {
         if (t.getRecordId() == null){
-            throw new PageException();
+            throw new PageException("Record ID is null");
         }
-        for (int i = 0; i < pageSize; i++){
+        int empty = 0;
+        for (int i = 0; i < tuples.length; i++){
             if (isSlotUsed(i)){
-                if(tuples[i].getRecordId().equals(t.getRecordId())){
+                if(this.getId().equals(t.getRecordId().getPageId())){
                     tuples[i] = null;
+                    empty++;
                     break;
                 }
                 else{
-                    throw new PageException();
+                    throw new PageException("RecordId doesn't match");
                 }
             }
+        }
+        if (empty == 0){
+            throw new PageException("Already empty");
         }
     }
 
@@ -212,13 +231,13 @@ public class SlottedPage implements Page {
     public Iterator<Tuple> iterator() {
         Tuple[] usedpages = new Tuple[getNumSlots() - getNumEmptySlots()];
         int j = 0;
-        for (int i = 0; i < pageSize; i++){
+        for (int i = 0; i < tuples.length; i++){
             if (isSlotUsed(i)){
                 usedpages[j] = tuples[i];
                 j++;
             }
         }
-        Iterator<Tuple> iter = new TupList(Arrays.asList(usedpages)); 
+        Iterator<Tuple> iter = new TupList(usedpages).iterator(); 
         return iter;
     }
 
@@ -250,36 +269,47 @@ public class SlottedPage implements Page {
             oldData = getPageData().clone();
         }
     }
-    class TupList implements Iterable<Tuple> {
-
-    List<Tuple> list;
-    private int currSize;
-
-    public TupList(List<Tuple> newlist) {
-        list = newlist;
-        currSize = 0;
-    }
+    
+    public class TupList implements Iterable {
+        private Tuple[] list;
+        private int currSize;
         
-            @Override
-            public boolean hasNext() {
-                return currSize < list.size();
-            }
-
-            @Override
-            public Tuple next() {
-                if (!hasNext()){
-                    throw new NoSuchElementException();
-                }
-                Tuple nextVal = list.get(currSize);
-                currSize++;
-                return nextVal;
-            }
-
-            @Override
-            public void remove() {
-                throw new UnsupportedOperationException();
-            }
+        public TupList(Tuple[] pages){
+            list = pages;
         }
-    }
+        @Override
+        public Iterator<Tuple> iterator() {
+            return new MyIterator();
+        }
+        
+       class MyIterator implements Iterator<Tuple>{
+           
+           private int currIdx;
+        
+           public MyIterator() {
+            currIdx = 0;
+        }
 
+        @Override
+        public boolean hasNext() {
+            return currIdx < list.length;
+        }
+
+        @Override
+        public Tuple next() {
+            if (!hasNext()) {  
+                throw new NoSuchElementException();
+            }
+            Tuple nextValue = list[currIdx];
+            currIdx++;
+            return nextValue;
+        }
+
+        @Override
+        public void remove() {
+            throw new UnsupportedOperationException();
+        }
+       }
+ 
+    }
 }
