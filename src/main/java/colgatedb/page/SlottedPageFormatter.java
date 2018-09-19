@@ -145,11 +145,12 @@ public class SlottedPageFormatter {
      * @param isUsed if true, slot should be set to 1; if false, set to 0
      */
     private static void markSlot(int i, byte[] header, boolean isUsed) {
-        if (header[i] == 0) {
-            isUsed = false;
+        if (!isUsed) {
+            header[i] = 0;
+            isUsed = true;
         }
         else {
-            isUsed = true;
+            header[i] = 1;
         }
     }
 }
