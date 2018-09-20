@@ -98,7 +98,11 @@ public class SlottedPage implements Page {
      * the page size and the schema (TupleDesc).
      */
     public int getNumSlots() {
-        return 5;
+        int slots = 0;
+        for (int i = 0; i < tuples.length; i++){
+            slots++;
+        }
+        return (td.numFields()*slots);
     }
 
     /**
